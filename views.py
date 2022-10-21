@@ -1,8 +1,10 @@
-from flask import render_template, request, redirect, session, flash, url_for
-from app import app, db
+from flask import render_template, request, redirect, session, flash, url_for, Blueprint
+from app import db
 from models import Jogos, Usuarios
 
-@app.route('/')
+view = Blueprint('view', __name__)
+
+@view.route('/')
 def index():
     
     print('rodando')
@@ -12,13 +14,13 @@ def index():
     # padrão, sendo assim, somente o nome do arquivo precisa ser passado
     return render_template('lista.html', titulo='Jogos', jogos=lista)
 
-@app.route('/novo')
+@view.route('/novo')
 def novo():
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
         return redirect(url_for('login', proxima=url_for('novo')))
     return render_template('novo.html', titulo='Novo Jogo')
 
-@app.route('/criar', methods=['POST'])
+@view.route('/criar', methods=['POST'])
 def criar():
     # O flask identifica o dado que deve ser captado pelo que foi recebido no form pela tag pelo 
     # parâmetro identificador "name" na tag do HTML
@@ -39,12 +41,12 @@ def criar():
     # 'index' é a função que instancia a página da rota '/'
     return redirect(url_for('index'))
 
-@app.route('/login')
+@view.route('/login')
 def login():
     proxima = request.args.get('proxima')
     return render_template('login.html', proxima=proxima)
 
-@app.route('/autenticar', methods=['POST'])
+@view.route('/autenticar', methods=['POST'])
 def autenticar():
     
     usuario = Usuarios.query.filter_by(nickname = request.form['usuario']).first()
@@ -61,7 +63,7 @@ def autenticar():
         flash('Usuário não logado!')
         return redirect(url_for('login'))
     
-@app.route('/logout')
+@view.route('/logout')
 def logout():
     session['usuario_logado'] = None
     flash('Logout efetuado com sucesso')
