@@ -3,16 +3,16 @@ from mysql.connector import errorcode
 
 print("Conectando...")
 try:
-  conn = mysql.connector.connect(
-        host='127.0.0.1',
-        user='root',
-        password='PerAsperaAdAstra01'
+      conn = mysql.connector.connect(
+            host='127.0.0.1',
+            user='root',
+            password='admin'
       )
 except mysql.connector.Error as err:
-  if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        print('Existe algo errado no nome de usuário ou senha')
-  else:
-        print(err)
+      if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+            print('Existe algo errado no nome de usuário ou senha')
+      else:
+            print(err)
 
 cursor = conn.cursor()
 
@@ -53,6 +53,7 @@ for tabela_nome in TABLES:
                   print(err.msg)
       else:
             print('OK')
+
 
 # inserindo usuarios
 usuario_sql = 'INSERT INTO usuarios (nome, nickname, senha) VALUES (%s, %s, %s)'
